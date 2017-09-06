@@ -8315,10 +8315,23 @@ var obj =
   "type" : "playlist",
   "uri" : "spotify:user:unsneakyninja:playlist:484CdRc1M1XOTt7OhRHoT4"
 }
-var newArray = obj.tracks.items.map (function(item, index) {
+var nameAndIds = obj.tracks.items.map (function(item, index) {
      return {name:item.track.name, id:item.track.id};
 });
-var idArray = newArray.filter(function(value, index) {
-     return value;
+
+var idArray = nameAndIds.map(function(nameAndId, index) {
+     return nameAndId.id;
 });
-console.log(newArray);
+var otherPlaylist = ["6ltwanTt7xjvZ3rPayPppS","1kMuU3TNQvHbqvXCWBodmP","2Zb7wnGUnNPCas2E0wWSQ5"]
+
+var filteredIds = idArray.filter(function(id) {
+    var index = otherPlaylist.indexOf(id);
+
+    return index !== -1;
+});
+var filteredNames = nameAndIds.filter(function(nameAndId){
+    var index = filteredIds.indexOf(nameAndId.id);
+    return index !== -1;
+
+});
+console.log(filteredNames);
