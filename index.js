@@ -8315,6 +8315,7 @@ var obj =
   "type" : "playlist",
   "uri" : "spotify:user:unsneakyninja:playlist:484CdRc1M1XOTt7OhRHoT4"
 }
+var $console = document.querySelector('section.outputNames')
 var nameAndIds = obj.tracks.items.map (function(item, index) {
      return {name:item.track.name, id:item.track.id};
 });
@@ -8329,9 +8330,55 @@ var filteredIds = idArray.filter(function(id) {
 
     return index !== -1;
 });
-var filteredNames = nameAndIds.filter(function(nameAndId){
+var filteredNamesandIds = nameAndIds.filter(function(nameAndId){
     var index = filteredIds.indexOf(nameAndId.id);
     return index !== -1;
-
 });
-console.log(filteredNames);
+var fullyFilteredNames = filteredNamesandIds.map(function(filteredNameandId, index){
+    return filteredNameandId.name;
+})
+function appendNames(names) {
+  for (var i = 0; i < names.length; i++) {
+    var li = document.createElement("li");
+    li.textContent = names[i];
+    $console.appendChild(li);
+  }
+
+}
+
+var tokenArrays = [];
+var hashArray = [];
+var fullyHashArray = [];
+str = location.hash;
+tokenArrays = str.split("&");
+hashString = tokenArrays.join("=");
+hashArray = hashString.split("=");
+console.log(hashArray);
+
+localStorage.setItem(hashArray[0], hashArray[1]);
+localStorage.setItem(hashArray[2], hashArray[3]);
+
+function removeLoginButton() {
+  var button = document.getElementById('login');
+    button.classList.add("hide");
+}
+
+if (localStorage.getItem("#access_token")) {
+  removeLoginButton();
+}
+
+var request = new Request('https://api.spotify.com/v1/users/unsneakyninja/playlists/484CdRc1M1XOTt7OhRHoT4', {
+  headers: {
+    'Authorization': 'Bearer ' + localStorage.getItem("#access_token")
+  },
+  method: 'GET',
+});
+
+
+fetch(request).then(function(response) {
+	console.log(response);
+}).catch(function(err) {
+	// Error :(
+});
+appendNames(fullyFilteredNames);
+console.log(fullyFilteredNames);
