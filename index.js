@@ -1,27 +1,47 @@
 
 var $console = document.querySelector('section.outputNames')
-function
-var nameAndIds = obj.tracks.items.map (function(item, index) {
+
+function nameAndIds(playlist){
+  return playlist.tracks.items.map (function(item, index) {
      return {name:item.track.name, id:item.track.id};
-});
 
-var idArray = nameAndIds.map(function(nameAndId, index) {
-     return nameAndId.id;
-});
+   });
+}
+function idArray(nameAndIds){
+  return nameAndIds.map(function(nameAndId, index) {
+       return nameAndId.id;
+  });
+}
 
-
-var filteredIds = idArray.filter(function(id) {
+function filteredIds(idArray, otherPlaylist){
+  return idArray.filter(function(id) {
     var index = otherPlaylist.indexOf(id);
 
     return index !== -1;
-});
-var filteredNamesandIds = nameAndIds.filter(function(nameAndId){
+  });
+}
+function filteredNamesandIds(nameAndIds, filteredIds) {
+  return nameAndIds.filter(function(nameAndId){
     var index = filteredIds.indexOf(nameAndId.id);
     return index !== -1;
-});
-var fullyFilteredNames = filteredNamesandIds.map(function(filteredNameandId, index){
+  });
+}
+
+function fullyFilteredNames(filteredNamesandIds) {
+  return filteredNamesandIds.map(function(filteredNameandId, index){
     return filteredNameandId.name;
-})
+  });
+}
+function processPlaylist(playlist, playlist2) {
+  var fNameandIds = nameAndIds(playlist);
+  var f2NameandIds = nameAndIds(playlist2);
+  var fidArray = idArray(fNameandIds);
+  var f2idArray = idArray(f2NameandIds);
+  var ffilteredIds = filteredIds(fidArray, f2idArray);
+  var ffilteredNamesAndIds = filteredNamesandIds(fNameandIds, ffilteredIds);
+  var ffullyFilteredNames = fullyFilteredNames(ffilteredNamesAndIds);
+  return ffullyFilteredNames;
+}
 function appendNames(names) {
   for (var i = 0; i < names.length; i++) {
     var li = document.createElement("li");
@@ -96,27 +116,33 @@ function onSubmit(e){
 var playlist1;
 var playlist2;
 
-    fetch(request).then(function(response) {
+    var fetch1 = fetch(request).then(function(response) {
     	console.log(response);
       return response.json();
     }).then(function(json){
       playlist1 = json;
+      return json;
+
     }).catch(function(err) {
     	console.error(err);
     });
 
-    fetch(request2).then(function(response) {
+    var fetch2 = fetch(request2).then(function(response) {
       console.log(response);
       return response.json();
     }).then(function(json){
       playlist2 = json;
+      return json;
     }).catch(function(err) {
       console.error(err);
     });
+    Promise.all([fetch1, fetch2]).then(function(values){
+       console.log(values)
+       appendNames(processPlaylist(playlist1, playlist2));
+       console.log(processPlaylist);
+    });
+
 }
 //https://api.spotify.com/v1/users/ + inputTextValueF1[0] + /playlists/ + inputTextValueF1[1];
 //https://api.spotify.com/v1/users/ + inputTextValueF2[0] + /playlists/ + inputTextValueF2[1];
 //What is above is just so you remember what it will look like
-
-appendNames(fullyFilteredNames);
-console.log(fullyFilteredNames);
