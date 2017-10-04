@@ -1,5 +1,17 @@
 var $console = document.querySelector('section.outputNames');
-var nonSongs = document.querySelector('section.outputNonNames');
+var button = document.querySelector('button.reset');
+
+
+button.addEventListener("click", onReset)
+     function onReset(){
+       while ($console.firstElementChild){
+         $console.removeChild($console.firstElementChild);
+         removeDivOne.classList.remove("hide");
+         removeDivTwo.classList.remove("hide");
+
+       }
+     }
+
 
 function nameAndIds(playlist) {
   return playlist.map(function(item, index) {
@@ -25,13 +37,6 @@ function filteredIds(idArray, otherPlaylist) {
   });
 }
 
- // function filteredNonSongIds(idArray, otherPlaylist) {
- //   return idArray.filter(function(id) {
- //     var index = otherPlaylist.indexOf(id);
- //
- //     return index == -1;
- //   });
- // }
 
 function filteredNamesandIds(nameAndIds, filteredIds) {
   return nameAndIds.filter(function(nameAndId) {
@@ -40,12 +45,6 @@ function filteredNamesandIds(nameAndIds, filteredIds) {
   });
 }
 
-// function filteredNonNamesandIds(nameAndIds, filteredIds) {
-//   return nameAndIds.filter(function(nameAndId) {
-//     var index = filteredIds.indexOf(nameAndId.id);
-//     return index == -1;
-//   });
-// }
 
 function fullyFilteredNames(filteredNamesandIds) {
   return filteredNamesandIds.map(function(filteredNameandId, index) {
@@ -53,11 +52,6 @@ function fullyFilteredNames(filteredNamesandIds) {
   });
 }
 
-// function fullyFilteredNonNames(filteredNamesandIds) {
-//   return filteredNamesandIds.map(function(filteredNameandId, index) {
-//     return filteredNameandId.name
-//   });
-// }
 
 function processPlaylist(playlist, playlist2) {
   var fNameandIds = nameAndIds(playlist);
@@ -70,33 +64,22 @@ function processPlaylist(playlist, playlist2) {
   return ffullyFilteredNames;
 }
 
-  // function processNonSongPlaylist(playlist, playlist2) {
-  //   var fNameandIds = nameAndIds(playlist);
-  //   var f2NameandIds = nameAndIds(playlist2);
-  //   var fidArray = idArray(fNameandIds);
-  //   var f2idArray = idArray(f2NameandIds);
-  //   var ffilteredNonSongIds = filteredNonSongIds(fidArray, f2idArray);
-  //   var ffilteredNamesAndIds = filteredNamesandIds(fNameandIds, ffilteredNonSongIds);
-  //   var ffullyFilteredNames = fullyFilteredNames(ffilteredNamesAndIds);
-  //   return ffullyFilteredNames;
-  // }
 
 function appendNames(names) {
   for (var i = 0; i < names.length; i++) {
     var li = document.createElement("li");
+    li.classList.add("songNames")
     li.textContent = names[i];
     $console.appendChild(li);
   }
 }
-// function appendNonNames(names) {
-//   for (var i = 0; i < names.length; i++) {
-//     var li = document.createElement("li");
-//     li.textContent = names[i];
-//     nonSongs.appendChild(li);
-//   }
-// }
-
-
+function appendNonNames(names) {
+  for (var i = 0; i < names.length; i++) {
+    var li = document.createElement("li");
+    li.textContent = names[i];
+    nonSongs.appendChild(li);
+  }
+}
 
 var tokenArrays = [];
 var hashArray = [];
@@ -114,7 +97,12 @@ function removeLoginButton() {
   var button = document.getElementById('login');
   button.classList.add("hide");
 }
-
+var removeDivOne = document.querySelector('div.playlistOne')
+var removeDivTwo = document.querySelector('div.playlistTwo')
+function removeInput() {
+  removeDivOne.classList.add("hide");
+  removeDivTwo.classList.add("hide");
+}
 if (localStorage.getItem("#access_token")) {
   removeLoginButton();
 }
@@ -207,8 +195,6 @@ function onSubmit(e) {
          reject(err);
        });
    }
-  // playlistTracks(request);
-  //  foreignPlaylist(request2);
 
    function fetchPlaylistTracks(request){
      return new Promise(function(resolve, reject){
@@ -228,13 +214,8 @@ function onSubmit(e) {
    ]).then(function(values){
       console.log(values)
       appendNames(processPlaylist(values[0], values[1]));
-    //  appendNonNames(processNonSongPlaylist(values[0], values[1]));
       console.log(processPlaylist);
+      removeInput();
    });
 
 }
-
-
-//https://api.spotify.com/v1/users/ + inputTextValueF1[0] + /playlists/ + inputTextValueF1[1];
-//https://api.spotify.com/v1/users/ + inputTextValueF2[0] + /playlists/ + inputTextValueF2[1];
-//What is above is just so you remember what it will look like
